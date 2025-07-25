@@ -1,0 +1,57 @@
+1. REGISTER API
+
+curl -X POST http://localhost:3001/api/register   -H "Content-Type: application/json"   -d '{
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "password": "@yourPassword123",
+    "username": "johndoe"
+  }'
+
+{"message":"User registered successfully"}
+
+
+2. LOGIN API
+
+a. using email and password
+
+curl -X POST http://localhost:3001/api/login \
+  -H "Content-Type: application/json" \
+  -c cookies.txt \
+  -d '{
+    "email": "john.doe4@example.com",
+    "password": "@yourPassword123"
+  }'
+
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5c","first_name":"John","last_name":"Doe"}
+
+b. using username and password
+
+curl -X POST http://localhost:3001/api/login   -H "Content-Type: application/json"   -c cookies.txt   -d '{
+    "username": "johndoe",
+    "password": "@yourPassword123"
+  }'
+
+{"accessToken":"eyJhbGciOiJIU","first_name":"John","last_name":"Doe"} 
+
+3. REFRESH TOKEN
+
+curl -X POST http://localhost:3001/api/refresh   -b cookies.txt
+
+{"accessToken":"eyJhbGciOiJIUzI1N"}
+
+4. PASSWORD CHANGE
+
+curl -X POST http://localhost:3001/api/change-password   -H "Authorization: Bearer eyJhbGciOi"   -H "Content-Type: application/json"   -d '{"old_password": "@yourPassword123", "new_password": "@@yourPassword123"}'      
+{"message":"Password change successful"}
+
+5. CHANGE LEVEL
+
+curl -X POST http://localhost:3001/api/admin-change-level   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidG9rZW5fdmVyc2lvbiI6MSwiaWF0IjoxNzUxNzMxOTEyLCJleHAiOjE3NTE3MzU1MTJ9.XK6wMhA0BMqjhEU7nH97xnExBbNS4KaG4wyYkbuW9do"   -H "Content-Type: application/json"   -d '{"email": "john.doe@example.com", "level": "1"}'
+{"message":"Level changed successfully"}
+
+6. SAMPLE PROTECTED API
+
+curl -X POST http://localhost:3001/api/add   -H "Authorization: Bearer eyJwdwewdwd"   -H "Content-Type: application/json"   -d '{"a": 10, "b": 15}'
+
+{"sum":25}
