@@ -37,7 +37,6 @@ const login = async (req, res, next) => {
     } else if (username) {
       user = await getUserByUsername(username);
     }
-    console.log(user)
 
     if (!user) {
       logger.warn('Login failed: User not found', { email, username });
@@ -111,8 +110,6 @@ const refreshToken = async (req, res, next) => {
       try {
         user = await findUserById(id);
         token_version_db = await getTokenVersionByUserId(id)
-        console.log("db_token",token_version_db)
-        console.log("token",token_version)
         if (token_version_db!== token_version) {
           logger.warn('Refresh failed: Invalid token, already logged in', {
           error: "Logged somewhere else"
