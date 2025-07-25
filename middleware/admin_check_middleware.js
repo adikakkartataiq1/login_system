@@ -9,8 +9,7 @@ const admin_check_middleware = async (req, res, next) => {
   
   try {
     const user = await findUserById(req.user.id);
-    console.log(Number(user.level))
-    console.log(Number(user.level)>1)
+
     if(Number(user.level)>1){
       logger.info('Admin authentication successful', { userId: user.id });
     }
