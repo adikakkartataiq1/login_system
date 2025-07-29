@@ -3,9 +3,9 @@
 curl -X POST http://localhost:3001/api/register   -H "Content-Type: application/json"   -d '{
     "first_name": "John",
     "last_name": "Doe",
-    "email": "john.doe@example.com",
+    "email": "john.doe77@example.com",
     "password": "@yourPassword123",
-    "username": "johndoe"
+    "username": "johndoe77"
   }'
 
 {"message":"User registered successfully"}
@@ -19,7 +19,7 @@ curl -X POST http://localhost:3001/api/login \
   -H "Content-Type: application/json" \
   -c cookies.txt \
   -d '{
-    "email": "john.doe4@example.com",
+    "email": "john.doe77@example.com",
     "password": "@yourPassword123"
   }'
 

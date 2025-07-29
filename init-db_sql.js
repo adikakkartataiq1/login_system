@@ -12,7 +12,7 @@ const bcrypt = require('bcryptjs');
     // Step 1: Connect without specifying a database
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
-      user: process.env.DB_USER,
+      user: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD.replace(/'/g, ''),
       multipleStatements: true, // allows running more than one query
     });

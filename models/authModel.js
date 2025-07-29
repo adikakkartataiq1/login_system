@@ -1,93 +1,84 @@
-const db = require('../config/db');
+const getUserRepo = require('../utils/getUserRepo');
 
 const getUserByEmail = async (email) => {
-  const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-  return rows[0];
+  const repo = getUserRepo();
+  return await repo.findOneBy({ email });
 };
 
 const getUserByUsername = async (username) => {
-  const [rows] = await db.execute('SELECT * FROM users WHERE username = ?', [username]);
-  return rows[0];
+  const repo = getUserRepo();
+  return await repo.findOneBy({ username });
 };
 
 const saveRefreshToken = async (userId, refreshToken) => {
-  await db.execute('UPDATE users SET refresh_token = ? WHERE id = ?', [refreshToken, userId]);
+  const repo = getUserRepo();
+  await repo.update(userId, { refresh_token: refreshToken });
 };
 
 const change_password_query = async (userId, new_password) => {
-  await db.execute('UPDATE users SET password = ? WHERE id = ?', [new_password, userId]);
+  const repo = getUserRepo();
+  await repo.update(userId, { password: new_password });
 };
-
-
 
 const createUser = async ({ first_name, last_name, email, hashedPassword, username }) => {
-  const [result] = await db.execute(
-    'INSERT INTO users (first_name, last_name, email, password, username) VALUES (?, ?, ?, ?, ?)',
-    [first_name, last_name, email, hashedPassword, username]
-  );
-  return result;
-};
+  const repo = getUserRepo();
+  const user = process.env.DB_TYPE === 'mongodb'
+    ? { first_name, last_name, email, password: hashedPassword, username }
+    : repo.create({ first_name, last_name, email, password: hashedPassword, username });
 
-const findUserByEmail = async (email) => {
-  const [rows] = await db.execute(
-    'SELECT * FROM users WHERE email = ?',
-    [email]
-  );
-  return rows[0];
+  return process.env.DB_TYPE === 'mongodb'
+    ? await repo.insertOne(user)
+    : await repo.save(user);
 };
 
 const findUserById = async (id) => {
-  const [rows] = await db.execute(
-    'SELECT * FROM users WHERE id = ?',
-    [id]
-  );
-  return rows[0];
+  const repo = getUserRepo();
+  return await repo.findOneBy({ id });
 };
 
 const change_level_query = async (email, level) => {
-  await db.execute(
-    'UPDATE users SET level = ? WHERE email = ?',
-    [level, email]
-  );
-};
-const updateRefreshToken = async (userId, token) => {
-  await db.execute(
-    'UPDATE users SET refresh_token = ? WHERE id = ?',
-    [token, userId]
-  );
+  const repo = getUserRepo();
+  await repo.update({ email }, { level });
 };
 
 const increaseJwtVersion = async (userId) => {
-  await db.execute(
-    'UPDATE users SET token_version = token_version + 1 WHERE id = ?',
-    [userId]
-  );
+  const repo = getUserRepo();
+  const user = await repo.findOneBy({ id: userId });
+  if (user) {
+    user.token_version = (user.token_version || 0) + 1;
+    if (process.env.DB_TYPE === 'mongodb') {
+      await repo.update({ _id: user._id }, { $set: { token_version: user.token_version } });
+    } else {
+      await repo.save(user);
+    }
+  }
 };
 
 const findUserByRefreshToken = async (token) => {
-  const [rows] = await db.execute(
-    'SELECT * FROM users WHERE refresh_token = ?',
-    [token]
-  );
-  return rows[0];
+  const repo = getUserRepo();
+  return await repo.findOneBy({ refresh_token: token });
 };
 
 const getTokenVersionByUserId = async (userId) => {
-  const [rows] = await db.query(
-    'SELECT token_version FROM users WHERE id = ?',
-    [userId]
-  );
-  return rows.length > 0 ? rows[0].token_version : null;
+  const repo = getUserRepo();
+  const user = await repo.findOneBy({ id: userId });
+  return user?.token_version || null;
 };
 
 const resetAllTokenVersions = async () => {
-  await db.query('UPDATE users SET token_version = 0');
+  const repo = getUserRepo();
+  if (process.env.DB_TYPE === 'mongodb') {
+    await repo.updateMany({}, { $set: { token_version: 0 } });
+  } else {
+    await repo.createQueryBuilder()
+      .update()
+      .set({ token_version: 0 })
+      .execute();
+  }
 };
 
 module.exports = {
   createUser,
-  findUserByEmail,
-  updateRefreshToken,
   findUserByRefreshToken,
   getUserByEmail,
   saveRefreshToken,
@@ -97,5 +88,5 @@ module.exports = {
   resetAllTokenVersions,
   findUserById,
   change_password_query,
-  change_level_query
+  change_level_query,
 };

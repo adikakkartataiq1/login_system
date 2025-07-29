@@ -1,7 +1,7 @@
 
 1. create .env file using .env_sample
 2. run `npm install` to install dependencies
-3. run `node init-db.js`  // for setting up database
+3. run `node init-db_sql.js`  // for setting up database
 4. for testing apis go open gitbash and get into api_test and then test apis
 5. cd frontend/admin
 6. npm run build

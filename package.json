@@ -4,7 +4,7 @@
   "description": "��#\u0000 \u0000s\u0000a\u0000m\u0000p\u0000l\u0000e\u0000_\u0000l\u0000o\u0000g\u0000i\u0000n\u0000_\u0000b\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "node --watch server.js",
     "prod": "node server.js"
   },
@@ -20,18 +20,23 @@
     "express-rate-limit": "^7.5.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.18.0",
     "mysql2": "^3.14.1",
     "node-cron": "^4.2.0",
     "nodemon": "^3.1.10",
     "path": "^0.12.7",
+    "pg": "^8.16.3",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.25",
     "typescript": "^5.8.3",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.6.3"
+    "jest": "^30.0.5",
+    "sequelize-cli": "^6.6.3",
+    "supertest": "^7.1.4"
   }
 }
